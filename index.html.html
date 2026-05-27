@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intelligent Network Architecture — Converged Charging Systems</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #040d1a;
+    --panel: #071428;
+    --panel2: #0a1e3a;
+    --border: #0e3a6e;
+    --accent: #00d4ff;
+    --accent2: #00ff9d;
+    --accent3: #ff6b35;
+    --accent4: #c77dff;
+    --text: #ffffff;
+    --text-dim: #ffffff;
+    --text-bright: #ffffff;
+    --glow: 0 0 18px rgba(0,212,255,0.4);
+    --glow2: 0 0 18px rgba(0,255,157,0.35);
+    --glow3: 0 0 18px rgba(255,107,53,0.35);
+    --glow4: 0 0 18px rgba(199,125,255,0.35);
+    --mono: 'Share Tech Mono', monospace;
+    --display: 'Orbitron', sans-serif;
+    --body: 'Rajdhani', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    font-size: 18px;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0,30,70,0.7) 0%, transparent 60%),
+      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(0,80,160,0.06) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(0,80,160,0.06) 40px);
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: relative;
+    padding: 60px 40px 40px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+  header::before {
+    content:'';
+    position:absolute; inset:0;
+    background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(0,212,255,0.08), transparent 70%);
+    pointer-events:none;
+  }
+  .scan-line {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
+    animation: scanMove 4s ease-in-out infinite;
+    opacity: 0.6;
+  }
+  @keyframes scanMove {
+    0%,100% { top: 0; opacity: 0; }
+    10% { opacity: 0.7; }
+    90% { opacity: 0.7; }
+    100% { top: 100%; opacity: 0; }
+  }
+  .header-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    animation: fadeUp 0.6s ease both;
+  }
+  h1 {
+    font-family: var(--display);
+    font-size: clamp(22px, 4vw, 46px);
+    font-weight: 900;
+    color: var(--text-bright);
+    line-height: 1.1;
+    letter-spacing: 2px;
+    animation: fadeUp 0.8s ease 0.1s both;
+    text-shadow: 0 0 30px rgba(0,212,255,0.3);
+  }
+  h1 span { color: var(--accent); }
+  .header-sub {
+    font-family: var(--body);
+    font-size: 14px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    margin-top: 12px;
+    animation: fadeUp 0.8s ease 0.2s both;
+  }
+  .header-badges {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+    animation: fadeUp 0.8s ease 0.3s both;
+  }
+  .badge {
+    padding: 4px 12px;
+    border: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    border-radius: 2px;
+  }
+  .badge.active { border-color: var(--accent); color: var(--accent); box-shadow: var(--glow); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── MAIN LAYOUT ── */
+  main { max-width: 1400px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  /* ── SECTION TITLES ── */
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 60px 0 28px;
+  }
+  .section-title::before {
+    content: '';
+    display: block;
+    width: 4px;
+    height: 32px;
+    background: var(--accent);
+    box-shadow: var(--glow);
+    flex-shrink: 0;
+  }
+  .section-title h2 {
+    font-family: var(--display);
+    font-size: clamp(14px, 2vw, 20px);
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--text-bright);
+  }
+  .section-title .section-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    margin-left: auto;
+  }
+
+  /* ── NODE CARDS ── */
+  .nodes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 20px;
+  }
+  .node-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--node-color, var(--accent));
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s, box-shadow 0.25s;
+    animation: fadeUp 0.6s ease both;
+  }
+  .node-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(var(--node-rgb,0,212,255),0.05), transparent 70%);
+    pointer-events: none;
+  }
+  .node-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 40px rgba(var(--node-rgb,0,212,255),0.15);
+  }
+  .node-card .card-corner {
+    position: absolute;
+    top: 10px; right: 10px;
+    font-family: var(--mono);
+    font-size: 9px;
+    color: rgba(var(--node-rgb,0,212,255),0.4);
+    letter-spacing: 1px;
+  }
+  .node-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .node-icon {
+    width: 46px; height: 46px;
+    border: 1px solid rgba(var(--node-rgb,0,212,255),0.4);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+    background: rgba(var(--node-rgb,0,212,255),0.06);
+    box-shadow: inset 0 0 12px rgba(var(--node-rgb,0,212,255),0.08);
+  }
+  .node-title { flex: 1; }
+  .node-title .node-abbr {
+    font-family: var(--display);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-bright);
+    line-height: 1;
+  }
+  .node-title .node-full {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: rgba(var(--node-rgb,0,212,255),0.7);
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+  }
+  .node-era {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 8px;
+    border: 1px solid rgba(var(--node-rgb,0,212,255),0.3);
+    font-family: var(--mono);
+    font-size: 9px;
+    color: rgba(var(--node-rgb,0,212,255),0.8);
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+  .node-era .dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: rgba(var(--node-rgb,0,212,255),0.8);
+    box-shadow: 0 0 6px rgba(var(--node-rgb,0,212,255),0.8);
+  }
+  .node-desc {
+    font-size: 13.5px;
+    color: var(--text);
+    line-height: 1.6;
+    margin-bottom: 16px;
+    font-weight: 300;
+  }
+  .node-specs {
+    border-top: 1px solid var(--border);
+    padding-top: 14px;
+  }
+  .spec-row {
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    margin-bottom: 6px;
+  }
+  .spec-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    width: 80px;
+    flex-shrink: 0;
+  }
+  .spec-value {
+    font-size: 12px;
+    color: var(--text);
+    font-weight: 600;
+    flex: 1;
+  }
+  .spec-value .tag {
+    display: inline-block;
+    padding: 1px 6px;
+    background: rgba(var(--node-rgb,0,212,255),0.1);
+    border: 1px solid rgba(var(--node-rgb,0,212,255),0.25);
+    font-family: var(--mono);
+    font-size: 9px;
+    color: rgba(var(--node-rgb,0,212,255),0.9);
+    margin: 1px 2px 1px 0;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── ARCHITECTURE DIAGRAM ── */
+  .arch-diagram {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 32px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .arch-diagram::after {
+    content:'';
+    position:absolute; inset:0;
+    background: radial-gradient(ellipse 50% 40% at 50% 50%, rgba(0,50,120,0.15), transparent 70%);
+    pointer-events:none;
+  }
+  .arch-inner { position: relative; z-index: 1; }
+
+  /* Generation rows */
+  .gen-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+  .gen-label {
+    font-family: var(--display);
+    font-size: 10px;
+    letter-spacing: 2px;
+    font-weight: 700;
+    width: 56px;
+    flex-shrink: 0;
+  }
+  .gen-nodes {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    flex: 1;
+  }
+  .arch-node {
+    padding: 7px 14px;
+    border: 1px solid;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    position: relative;
+    white-space: nowrap;
+  }
+  .arch-arrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    flex-shrink: 0;
+  }
+  .arch-proto {
+    font-family: var(--mono);
+    font-size: 9px;
+    padding: 2px 7px;
+    border: 1px dashed;
+    opacity: 0.6;
+    letter-spacing: 0.5px;
+  }
+  .gen-divider {
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+    margin: 6px 0 18px;
+  }
+
+  /* ── CALL FLOW DIAGRAM ── */
+  .flow-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 0;
+    flex-wrap: wrap;
+  }
+  .flow-tab {
+    padding: 8px 18px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    background: transparent;
+    transition: all 0.2s;
+    border-bottom: 0;
+  }
+  .flow-tab.active {
+    background: var(--panel2);
+    color: var(--accent);
+    border-color: var(--accent);
+    border-bottom: 1px solid var(--panel2);
+  }
+  .flow-tab:hover:not(.active) { color: var(--text); border-color: var(--text-dim); }
+  .flow-panel {
+    background: var(--panel2);
+    border: 1px solid var(--border);
+    padding: 28px 24px;
+    display: none;
+    margin-top: -1px;
+  }
+  .flow-panel.active { display: block; animation: fadeUp 0.3s ease; }
+
+  .flow-diagram {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+  .flow-actor {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .actor-box {
+    padding: 8px 12px;
+    border: 1px solid;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-align: center;
+    min-width: 80px;
+    font-weight: 700;
+  }
+  .actor-line {
+    width: 1px;
+    background: currentColor;
+    opacity: 0.2;
+    flex: 1;
+    min-height: 380px;
+  }
+  .flow-messages {
+    flex: 1;
+    position: relative;
+    min-width: 0;
+  }
+  .flow-msg {
+    display: flex;
+    align-items: center;
+    margin: 12px 0;
+    gap: 8px;
+    animation: fadeUp 0.4s ease both;
+  }
+  .msg-arrow {
+    flex: 1;
+    height: 28px;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .msg-arrow .arrow-line {
+    position: absolute;
+    left: 0; right: 0; top: 50%;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.6;
+  }
+  .msg-arrow .arrow-head {
+    position: absolute;
+    right: -1px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-left: 8px solid currentColor;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    opacity: 0.8;
+  }
+  .msg-arrow.left .arrow-head {
+    left: -1px; right: auto;
+    border-left: none;
+    border-right: 8px solid currentColor;
+    transform: translateY(-50%);
+  }
+  .msg-label {
+    position: absolute;
+    top: -18px; left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--mono);
+    font-size: 9px;
+    white-space: nowrap;
+    color: var(--text);
+    background: var(--panel2);
+    padding: 1px 6px;
+    border: 1px solid var(--border);
+    letter-spacing: 0.5px;
+  }
+  .step-num {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-dim);
+    width: 20px;
+    flex-shrink: 0;
+    text-align: right;
+  }
+  .step-desc {
+    font-family: var(--body);
+    font-size: 12.5px;
+    color: var(--text);
+    line-height: 1.4;
+  }
+
+  /* Flow as step list (easier to render) */
+  .flow-steps { }
+  .flow-step {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(14,58,110,0.5);
+    animation: fadeUp 0.4s ease both;
+  }
+  .flow-step:last-child { border-bottom: 0; }
+  .step-idx {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    padding-top: 2px;
+    font-weight: 700;
+  }
+  .step-body { }
+  .step-route {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+  }
+  .step-node {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 7px;
+    border: 1px solid;
+    letter-spacing: 0.5px;
+  }
+  .step-arrow-txt {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+  .step-proto-badge {
+    font-family: var(--mono);
+    font-size: 9px;
+    padding: 1px 6px;
+    background: rgba(0,0,0,0.3);
+    border: 1px dashed rgba(255,255,255,0.15);
+    color: var(--text-dim);
+    letter-spacing: 0.5px;
+  }
+  .step-detail {
+    font-size: 12.5px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    font-weight: 300;
+  }
+
+  /* ── PROTOCOL TABLE ── */
+  .proto-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .proto-table th {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--accent);
+    text-transform: uppercase;
+    background: rgba(0,212,255,0.03);
+  }
+  .proto-table td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .proto-table tr:hover td { background: rgba(0,212,255,0.03); }
+  .proto-table .src { font-family: var(--mono); font-size: 11px; color: var(--accent); }
+  .proto-table .dst { font-family: var(--mono); font-size: 11px; color: var(--accent2); }
+  .proto-table .iface { font-family: var(--mono); font-size: 10px; color: var(--accent3); font-weight: 700; }
+  .proto-table .desc { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
+  .proto-table .gen-pill {
+    display: inline-block;
+    padding: 1px 6px;
+    font-family: var(--mono);
+    font-size: 8px;
+    letter-spacing: 1px;
+    border-radius: 1px;
+    margin-left: 4px;
+  }
+  .g2g { background: rgba(0,212,255,0.12); color: var(--accent); border: 1px solid rgba(0,212,255,0.3); }
+  .g4g { background: rgba(0,255,157,0.12); color: var(--accent2); border: 1px solid rgba(0,255,157,0.3); }
+  .g5g { background: rgba(199,125,255,0.12); color: var(--accent4); border: 1px solid rgba(199,125,255,0.3); }
+  .gin { background: rgba(255,107,53,0.12); color: var(--accent3); border: 1px solid rgba(255,107,53,0.3); }
+
+  /* ── KPI SECTION ── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .kpi-category {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 20px;
+  }
+  .kpi-cat-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .kpi-cat-icon { font-size: 18px; }
+  .kpi-cat-title {
+    font-family: var(--display);
+    font-size: 12px;
+    letter-spacing: 2px;
+    font-weight: 700;
+  }
+  .kpi-item {
+    margin-bottom: 14px;
+  }
+  .kpi-name {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 5px;
+  }
+  .kpi-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-bright);
+    letter-spacing: 0.5px;
+  }
+  .kpi-abbr {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-dim);
+  }
+  .kpi-bar-wrap {
+    height: 4px;
+    background: rgba(255,255,255,0.06);
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi-bar {
+    height: 100%;
+    background: var(--kpi-color, var(--accent));
+    box-shadow: 0 0 6px var(--kpi-color, var(--accent));
+    animation: barGrow 1.2s ease both;
+  }
+  @keyframes barGrow {
+    from { width: 0 !important; }
+  }
+  .kpi-desc {
+    font-size: 11.5px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    margin-top: 5px;
+    font-weight: 300;
+  }
+
+  /* ── EVOLUTION TIMELINE ── */
+  .timeline {
+    position: relative;
+    padding-left: 30px;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 10px; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(180deg, var(--accent), var(--accent4), transparent);
+  }
+  .tl-item {
+    position: relative;
+    padding: 0 0 32px 20px;
+    animation: fadeUp 0.5s ease both;
+  }
+  .tl-dot {
+    position: absolute;
+    left: -26px; top: 4px;
+    width: 12px; height: 12px;
+    border: 2px solid var(--tl-color, var(--accent));
+    background: var(--bg);
+    box-shadow: 0 0 8px var(--tl-color, var(--accent));
+  }
+  .tl-era {
+    font-family: var(--display);
+    font-size: 11px;
+    letter-spacing: 2px;
+    font-weight: 700;
+    color: var(--tl-color, var(--accent));
+    margin-bottom: 6px;
+  }
+  .tl-title {
+    font-family: var(--body);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 6px;
+  }
+  .tl-body {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+  .tl-nodes {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+  .tl-node-chip {
+    padding: 2px 9px;
+    border: 1px solid;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 24px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: gap;
+    opacity: 0.5;
+  }
+  footer .ft-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+  }
+
+  /* ── PULSE ANIMATION ── */
+  @keyframes pulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .pulse { animation: pulse 2s ease-in-out infinite; }
+
+  /* responsive */
+  @media (max-width: 600px) {
+    .nodes-grid { grid-template-columns: 1fr; }
+    .flow-tabs { gap: 2px; }
+    .flow-tab { padding: 6px 10px; font-size: 9px; }
+    .proto-table { font-size: 11px; }
+    .proto-table th, .proto-table td { padding: 8px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="scan-line"></div>
+  <div class="header-tag">// TECHNICAL REFERENCE DOCUMENT · REV 4.6</div>
+  <h1>INTELLIGENT NETWORK <span>ARCHITECTURE</span></h1>
+  <div style="font-family:var(--display); font-size:clamp(11px,1.5vw,14px); color:var(--text-dim); margin-top:8px; letter-spacing:3px;">CONVERGED CHARGING SYSTEMS — NODE ANALYSIS &amp; CALL FLOWS</div>
+  <div class="header-badges">
+    <div class="badge active">2G/3G IN</div>
+    <div class="badge active">4G LTE</div>
+    <div class="badge active">5G SA</div>
+    <div class="badge">ERICSSON CCS</div>
+    <div class="badge">REAL-TIME CHARGING</div>
+    <div class="badge">POLICY CONTROL</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ═══════════════════════════════════════════════
+       SECTION 1 · CORE NODES
+  ══════════════════════════════════════════════════ -->
+  <div class="section-title">
+    <h2>CORE NETWORK NODES</h2>
+    <div class="section-num">01 / 05</div>
+  </div>
+
+  <div class="nodes-grid">
+
+    <!-- SDP -->
+    <div class="node-card" style="--node-color:#00d4ff; --node-rgb:0,212,255;" >
+      <div class="card-corner">NODE-001</div>
+      <div class="node-header">
+        <div class="node-icon">⬡</div>
+        <div class="node-title">
+          <div class="node-abbr">SDP</div>
+          <div class="node-full">SERVICE DATA POINT</div>
+        </div>
+      </div>
+      <div class="node-era"><div class="dot"></div>2G · 3G · 4G LEGACY</div>
+      <div class="node-desc">
+        Foundational real-time financial engine and subscriber database. Maintains hierarchical account structures (MA/DA) for millions of subscribers and executes real-time monetary deductions with sub-millisecond latency.
+      </div>
+      <div class="node-specs">
+        <div class="spec-row">
+          <div class="spec-label">PROTOCOL</div>
+          <div class="spec-value"><span class="tag">CIP</span><span class="tag">INAP CS1+</span></div>
+        </div>
+        <div class="spec-row">
+          <div class="spec-label">PLATFORM</div>
+          <div class="spec-value"><span class="tag">TSP</span><span class="tag">NSP</span><span class="tag">TelORB</span></div>
+        </div>
+        <div class="spec-row">
+          <div class="spec-label">FUNCTION</div>
+          <div class="spec-value">Balance reservation · Rating engine · Fund deduction</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CCN -->
+    <div class="node-card" style="--node-color:#00ff9d; --node-rgb:0,255,157; animation-delay:0.1s">
+      <div class="card-corner">NODE-002</div>
+      <div class="node-header">
+        <div class="node-icon" style="font-size:18px;">⟷</div>
+        <div class="node-title">
+          <div class="node-abbr">CCN</div>
+          <div class="node-full">CHARGING CONTROL NODE</div>
+        </div>
+      </div>
+      <div class="node-era"><div class="dot" style="background:var(--accent2);"></div>2G · 3G · 4G</div>
+      <div class="node-desc">
+        Protocol converter and access gateway. Terminates CAP/Diameter signaling from the MSC/SGSN/PGW, normalizes MSISDNs, and translates to CIP for SDP consumption. Primary CDR generation point.
+      </div>
+      <div class="node-specs">
+        <div class="spec-row">
+          <div class="spec-label">INCOMING</div>
+          <div class="spec-value"><span class="tag">CAPv1/2/3</span><span class="tag">SCAP</span><span class="tag">Diameter</span></div>
+        </div>
+        <div class="spec-row">
+          <div class="spec-label">OUTGOING</div>
+          <div class="spec-value"><span class="tag">CIP → SDP</span></div>
+        </div>
+        <div class="spec-row">
+          <div class="spec-label">FUNCTION</div>
+          <div class="spec-value">Number normalization · CDR generation · Intelligent routing</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AIR -->
+    <div class="node-card" style="--node-color:#ff6b35; --node-rgb:255,107,53; animation-delay:0.2s">
+      <div class="card-corner">NODE-003</div>
+      <div class="node-header">
+        <div class="node-icon" style="font-size:18px;">↺</div>
+        <div class="node-title">
+          <div class="node-abbr">AIR / AF</div>
+          <div class="node-full">ACCOUNT INFORMATION &amp; REFILL / ACCOUNT FINDER</div>
+        </div>
+      </div>
+      <div class="node-era"><div class="dot" style="background:var(--accent3);"></div>2G · 3G · 4G</div>
+      <div class="node-desc">
+        Top-up intelligence and subscriber lifecycle manager. The AF acts as internal DNS sharding queries to correct SDPs. AIR processes voucher validation, tiered bonus calculation, and MA/DA updates.
+      </div>
+      <div class="node-specs">
+        <div class="spec-row">
+          <div class="spec-label">PROTOCOL</div>
+          <div class="spec-value"><span class="tag">UCIP</span><span class="tag">ACIP</span><span class="tag">VSIP</span><span class="tag">XML</span></div>
+        </div>
+        <div class="spec-row">
+          <div class="spec-label">CHANNELS</div>
+          <div class="spec-value">USSD · Scratch card · Banking API · CRM</div>
+        </div>
+        <div class="spec-row">
+          <div class="spec-label">FUNCTION</div>
+          <div class="spec-value">Voucher auth · Lifecycle state machine · Bonus rating</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OCC -->
+    <div class="node-card" style="--node-color:#c77dff; --node-rgb:199,125,255; animation-delay:0.3s">
+      <div class="card-corner">NODE-004</div>
+      <div class="node-header">
+        <div class="node-icon" style="font-size:18px;">◈</div>
+        <div class="node-title">
+          <div class="node-abbr">OCC</div>
+          <div class="node-full">ONLINE CHARGING CONTROLLER</div>
+        </div>
+      </div>
+      <div class="node-era"><div class="dot" style="background:var(--accent4);"></div>4G LTE · DIAMETER ERA</div>
+      <div class="node-desc">
+        4G Diameter gateway on Linux/IT stack. Handles Diameter Credit Control sessions for PGW-driven data charging. Volume quota management, SCAPv2 to SDP bridging, deep Voucher Server integration.
+      </div>
+      <div class="node-specs">
+        <div class="spec-row">
+          <div class="spec-label">INTERFACES</div>
+          <div class="spec-value"><span class="tag">Gy/Ro</span><span class="tag">SCAPv2</span><span class="tag">Sy</span></div>
+        </div>
+        <div class="spec-row">
+          <div class="spec-label">STACK</div>
+          <div class="spec-value"><span class="tag">Linux</span><span class="tag">OSGi</span><span class="tag">Cassandra</span><span class="tag">ZooKeeper</span></div>
+        </div>
+        <div class="spec-row">
+          <div class="spec-label">FUNCTION</div>
+          <div class="spec-value">CCR/CCA session handling · Quota grants · Credit control</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- cCAF -->
+    <div class="node-card" style="--node-color:#ffe066; --node-rgb:255,224,102; animation-delay:0.4s">
+      <div class="card-corner">NODE-005</div>
+      <div class="node-header">
+        <div class="node-icon" style="font-size:18px;">☁</div>
+        <div class="node-title">
+          <div class="node-abbr">cCAF</div>
+          <div class="node-full">CLOUD NATIVE CHARGING ACCESS FUNCTION</div>
+        </div>
+      </div>
+      <div class="node-era"><div class="dot" style="background:#ffe066;"></div>5G SA · CLOUD NATIVE</div>
+      <div class="node-desc">
+        5G CHF gateway replacing OCC/CCN for next-gen traffic. Containerised microservices on CaaS/CNIS. Processes HTTP/2 SBI calls from SMF/AMF, enables VoNR, ViNR, AR/VR, network slicing monetization.
+      </div>
+      <div class="node-specs">
+        <div class="spec-row">
+          <div class="spec-label">INTERFACE</div>
+          <div class="spec-value"><span class="tag">Nchf</span><span class="tag">N28</span><span class="tag">HTTP/2</span></div>
+        </div>
+        <div class="spec-row">
+          <div class="spec-label">PLATFORM</div>
+          <div class="spec-value"><span class="tag">Kubernetes</span><span class="tag">CaaS</span><span class="tag">CNIS</span></div>
+        </div>
+        <div class="spec-row">
+          <div class="spec-label">USE CASES</div>
+          <div class="spec-value">Network slicing · IoT · VoNR · AR/VR</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CCPC -->
+    <div class="node-card" style="--node-color:#ff4dde; --node-rgb:255,77,222; animation-delay:0.5s">
+      <div class="card-corner">NODE-006</div>
+      <div class="node-header">
+        <div class="node-icon" style="font-size:18px;">⚙</div>
+        <div class="node-title">
+          <div class="node-abbr">CCPC</div>
+          <div class="node-full">CLOUD CORE POLICY CONTROLLER</div>
+        </div>
+      </div>
+      <div class="node-era"><div class="dot" style="background:#ff4dde;"></div>4G PCRF · 5G PCF · DUAL-MODE</div>
+      <div class="node-desc">
+        Dual-mode policy engine encapsulating PCRF (4G) and PCF (5G). Manages QoS rules, URSP, session/mobility policies. Interfaces with charging nodes to dynamically throttle, redirect, or lift subscriber restrictions.
+      </div>
+      <div class="node-specs">
+        <div class="spec-row">
+          <div class="spec-label">INTERFACES</div>
+          <div class="spec-value"><span class="tag">Gx</span><span class="tag">Sy</span><span class="tag">N7</span><span class="tag">N28</span></div>
+        </div>
+        <div class="spec-row">
+          <div class="spec-label">TOOLS</div>
+          <div class="spec-value"><span class="tag">Policy Studio</span><span class="tag">Kubernetes</span></div>
+        </div>
+        <div class="spec-row">
+          <div class="spec-label">FUNCTION</div>
+          <div class="spec-value">QoS enforcement · Throttling · Bearer management</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /nodes-grid -->
+
+
+  <!-- ═══════════════════════════════════════════════
+       SECTION 2 · ARCHITECTURE EVOLUTION TIMELINE
+  ══════════════════════════════════════════════════ -->
+  <div class="section-title">
+    <h2>ARCHITECTURAL EVOLUTION</h2>
+    <div class="section-num">02 / 05</div>
+  </div>
+
+  <div class="timeline">
+
+    <div class="tl-item" style="--tl-color:#00d4ff;">
+      <div class="tl-dot"></div>
+      <div class="tl-era">2G / 3G — INTELLIGENT NETWORK ERA</div>
+      <div class="tl-title">Circuit-Switched Voice &amp; SS7 Signaling</div>
+      <div class="tl-body">Legacy IN architecture revolutionised telecom by decoupling service logic from switching hardware via SS7 / CAMEL. Prepaid telephony built on proprietary TSP/NSP hardware with DICOS real-time OS. The SDP-CCN pairing formed the backbone of real-time charging.</div>
+      <div class="tl-nodes">
+        <div class="tl-node-chip" style="border-color:#00d4ff; color:#00d4ff;">SDP</div>
+        <div class="tl-node-chip" style="border-color:#00d4ff; color:#00d4ff;">CCN</div>
+        <div class="tl-node-chip" style="border-color:#00d4ff; color:#00d4ff;">AIR / AF</div>
+        <div class="tl-node-chip" style="border-color:#00d4ff; color:#00d4ff;">MSC · SSF</div>
+      </div>
+    </div>
+
+    <div class="tl-item" style="--tl-color:#00ff9d; animation-delay:0.1s">
+      <div class="tl-dot"></div>
+      <div class="tl-era">4G — LTE / EPC ERA</div>
+      <div class="tl-title">Packet-Switched Data &amp; Diameter Charging</div>
+      <div class="tl-body">Explosion in data sessions forced migration to IP-based Diameter protocol. OCC introduced on Linux/IT stack to handle massive CCR/CCA flows from PGW. PCRF (now in CCPC) enabled dynamic QoS policy. Volume quota model replaced time-based reservations.</div>
+      <div class="tl-nodes">
+        <div class="tl-node-chip" style="border-color:#00ff9d; color:#00ff9d;">OCC</div>
+        <div class="tl-node-chip" style="border-color:#00ff9d; color:#00ff9d;">CCPC (PCRF)</div>
+        <div class="tl-node-chip" style="border-color:#00ff9d; color:#00ff9d;">PGW</div>
+        <div class="tl-node-chip" style="border-color:#00ff9d; color:#00ff9d;">SDP</div>
+      </div>
+    </div>
+
+    <div class="tl-item" style="--tl-color:#c77dff; animation-delay:0.2s">
+      <div class="tl-dot"></div>
+      <div class="tl-era">5G — STANDALONE SBA ERA</div>
+      <div class="tl-title">Cloud Native, HTTP/2, Service-Based Architecture</div>
+      <div class="tl-body">Diameter abandoned. Full HTTP/2 RESTful SBI across all functions. cCAF acts as CHF, CCPC as PCF. Containerised microservices on Kubernetes enable elastic scaling for massive IoT, URLLC, and network slicing. AI/ML-driven closed-loop KPI optimisation.</div>
+      <div class="tl-nodes">
+        <div class="tl-node-chip" style="border-color:#c77dff; color:#c77dff;">cCAF (CHF)</div>
+        <div class="tl-node-chip" style="border-color:#c77dff; color:#c77dff;">CCPC (PCF)</div>
+        <div class="tl-node-chip" style="border-color:#c77dff; color:#c77dff;">SMF · AMF · UPF</div>
+        <div class="tl-node-chip" style="border-color:#c77dff; color:#c77dff;">Nchf · N28</div>
+      </div>
+    </div>
+
+    <div class="tl-item" style="--tl-color:#ff4dde; animation-delay:0.3s">
+      <div class="tl-dot"></div>
+      <div class="tl-era">CURRENT — CONVERGED HYBRID</div>
+      <div class="tl-title">Dual-Mode Operation: Legacy + 5G Simultaneously</div>
+      <div class="tl-body">Real-world deployments maintain CCN/OCC alongside cCAF in converged configuration. A single monetization ecosystem simultaneously processes CAMEL IN traffic, 4G Diameter sessions, and 5G SBI charging. Migration of stateful SDP databases to cloud-native remains the primary engineering challenge.</div>
+      <div class="tl-nodes">
+        <div class="tl-node-chip" style="border-color:#ff4dde; color:#ff4dde;">CCN + OCC + cCAF</div>
+        <div class="tl-node-chip" style="border-color:#ff4dde; color:#ff4dde;">CCPC DUAL-MODE</div>
+        <div class="tl-node-chip" style="border-color:#ff4dde; color:#ff4dde;">SDP MIGRATION</div>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════
+       SECTION 3 · CALL FLOWS
+  ══════════════════════════════════════════════════ -->
+  <div class="section-title">
+    <h2>CALL FLOW SEQUENCES</h2>
+    <div class="section-num">03 / 05</div>
+  </div>
+
+  <div class="flow-tabs">
+    <button class="flow-tab active" onclick="showFlow(0)">2G/3G CS VOICE</button>
+    <button class="flow-tab" onclick="showFlow(1)">4G DIAMETER DATA</button>
+    <button class="flow-tab" onclick="showFlow(2)">5G SBA CHARGING</button>
+  </div>
+
+  <!-- FLOW 0: CS Voice -->
+  <div class="flow-panel active" id="flow-0">
+    <div style="display:flex; gap:10px; align-items:center; margin-bottom:20px; flex-wrap:wrap;">
+      <div style="font-family:var(--display); font-size:12px; letter-spacing:2px; color:var(--accent);">CIRCUIT-SWITCHED PREPAID VOICE · CAMEL / IN FLOW</div>
+      <div style="font-family:var(--mono); font-size:10px; color:var(--text-dim);">SS7 · CAPv2 · CIP</div>
+    </div>
+    <div class="flow-steps">
+      <div class="flow-step" style="animation-delay:0s">
+        <div class="step-idx">01</div>
+        <div class="step-body">
+          <div class="step-route">
+            <div class="step-node" style="border-color:#aaa; color:#ccc;">UE / MS</div>
+            <div class="step-arrow-txt">──ISUP──▶</div>
+            <div class="step-node" style="border-color:#00d4ff; color:#00d4ff;">MSC (SSF)</div>
+            <div class="step-proto-badge">SS7 · ISUP</div>
+          </div>
+          <div class="step-detail">Mobile subscriber dials a number. Call setup request sent over radio interface. MSC recognises prepaid subscriber from HLR profile, suspends standard call routing and assumes role of Service Switching Function (SSF).</div>
+        </div>
+      </div>
+      <div class="flow-step" style="animation-delay:0.05s">
+        <div class="step-idx">02</div>
+        <div class="step-body">
+          <div class="step-route">
+            <div class="step-node" style="border-color:#00d4ff; color:#00d4ff;">MSC (SSF)</div>
+            <div class="step-arrow-txt">──CAP──▶</div>
+            <div class="step-node" style="border-color:#00ff9d; color:#00ff9d;">CCN</div>
+            <div class="step-proto-badge">CAPv1/v2/v3</div>
+          </div>
+          <div class="step-detail">SSF extracts IEs (calling/called party, location) from ISUP and embeds in a CAMEL Application Part (CAP) message. Message routed via SS7 signalling network to CCN.</div>
+        </div>
+      </div>
+      <div class="flow-step" style="animation-delay:0.1s">
+        <div class="step-idx">03</div>
+        <div class="step-body">
+          <div class="step-route">
+            <div class="step-node" style="border-color:#00ff9d; color:#00ff9d;">CCN</div>
+            <div class="step-arrow-txt">NORMALIZE</div>
+            <div class="step-node" style="border-color:#00ff9d; color:#00ff9d;">CCN</div>
+            <div class="step-proto-badge">INTERNAL</div>
+          </div>
+          <div class="step-detail">CCN performs number normalisation on dialled digits, MSISDN standardisation, and parameter conversion. Executes lookup table routing to identify the correct geographically redundant SDP instance.</div>
+        </div>
+      </div>
+      <div class="flow-step" style="animation-delay:0.15s">
+        <div class="step-idx">04</div>
+        <div class="step-body">
+          <div class="step-route">
+            <div class="step-node" style="border-color:#00ff9d; color:#00ff9d;">CCN</div>
+            <div class="step-arrow-txt">──CIP──▶</div>
+            <div class="step-node" style="border-color:#00d4ff; color:#00d4ff;">SDP</div>
+            <div class="step-proto-badge">CIP / INAP CS1+</div>
+          </div>
+          <div class="step-detail">CAP message translated to proprietary CIP query. SDP interrogates subscriber record, checks MA balance, determines per-minute tariff. Reserves funds sufficient for initial time quantum (e.g. 3 minutes).</div>
+        </div>
+      </div>
+      <div class="flow-step" style="animation-delay:0.2s">
+        <div class="step-idx">05</div>
+        <div class="step-body">
+          <div class="step-route">
+            <div class="step-node" style="border-color:#00d4ff; color:#00d4ff;">SDP</div>
+            <div class="step-arrow-txt">◀──AUTH──</div>
+            <div class="step-node" style="border-color:#00ff9d; color:#00ff9d;">CCN</div>
+            <div class="step-arrow-txt">──CONNECT──▶</div>
+            <div class="step-node" style="border-color:#00d4ff; color:#00d4ff;">MSC</div>
+          </div>
+          <div class="step-detail">SDP returns authorization back through CCN to MSC SSF. SSF instructed to connect bearer path. Call commences. Timer starts for reserved quota.</div>
+        </div>
+      </div>
+      <div class="flow-step" style="animation-delay:0.25s">
+        <div class="step-idx">06</div>
+        <div class="step-body">
+          <div class="step-route">
+            <div class="step-node" style="border-color:#00d4ff; color:#00d4ff;">MSC</div>
+            <div class="step-arrow-txt">──TERM──▶</div>
+            <div class="step-node" style="border-color:#00ff9d; color:#00ff9d;">CCN</div>
+            <div class="step-arrow-txt">──COMMIT──▶</div>
+            <div class="step-node" style="border-color:#00d4ff; color:#00d4ff;">SDP</div>
+          </div>
+          <div class="step-detail">On call termination (or quota expiry), MSC notifies CCN → SDP. SDP finalises exact monetary deduction, releases unused reserved funds. CCN generates CDR with balances before/after, forwards to EMM mediation via FTP.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOW 1: 4G Data -->
+  <div class="flow-panel" id="flow-1">
+    <div style="display:flex; gap:10px; align-items:center; margin-bottom:20px; flex-wrap:wrap;">
+      <div style="font-family:var(--display); font-size:12px; letter-spacing:2px; color:var(--accent2);">4G LTE PACKET DATA SESSION · DIAMETER FLOW</div>
+      <div style="font-family:var(--mono); font-size:10px; color:var(--text-dim);">Gy/Ro · Gx · SCAPv2</div>
+    </div>
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="step-idx">01</div>
+        <div class="step-body">
+          <div class="step-route">
+            <div class="step-node" style="border-color:#aaa; color:#ccc;">PGW</div>
+            <div class="step-arrow-txt">──CCR-I──▶</div>
+            <div class="step-node" style="border-color:#c77dff; color:#c77dff;">OCC</div>
+            <div class="step-proto-badge">Diameter Gy/Ro</div>
+          </div>
+          <div class="step-detail">UE activates data bearer. PGW sends Diameter Credit Control Request (CCR-Initial) to OCC. Simultaneously requests policy from CCPC (PCRF) via Gx interface for subscriber QoS/MBR rules.</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-idx">02</div>
+        <div class="step-body">
+          <div class="step-route">
+            <div class="step-node" style="border-color:#c77dff; color:#c77dff;">OCC</div>
+            <div class="step-arrow-txt">──SCAPv2──▶</div>
+            <div class="step-node" style="border-color:#00d4ff; color:#00d4ff;">SDP</div>
+            <div class="step-proto-badge">SCAPv2</div>
+          </div>
+          <div class="step-detail">OCC translates Diameter CCR to SCAPv2 query toward SDP. Requests initial volume quota (e.g. 50 MB). SDP reserves monetary equivalent and confirms to OCC.</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-idx">03</div>
+        <div class="step-body">
+          <div class="step-route">
+            <div class="step-node" style="border-color:#c77dff; color:#c77dff;">OCC</div>
+            <div class="step-arrow-txt">──CCA-I──▶</div>
+            <div class="step-node" style="border-color:#aaa; color:#ccc;">PGW</div>
+            <div class="step-proto-badge">Diameter CCA</div>
+          </div>
+          <div class="step-detail">OCC returns Credit Control Answer (CCA) with granted quota and validity timer. Data flow commences. PGW monitors volume consumption continuously.</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-idx">04</div>
+        <div class="step-body">
+          <div class="step-route">
+            <div class="step-node" style="border-color:#aaa; color:#ccc;">PGW</div>
+            <div class="step-arrow-txt">──CCR-U──▶</div>
+            <div class="step-node" style="border-color:#c77dff; color:#c77dff;">OCC</div>
+            <div class="step-proto-badge">CCR-Update</div>
+          </div>
+          <div class="step-detail">As quota threshold nears, PGW proactively sends CCR-Update to reserve next quota. If balance depleted, OCC rejects. CCPC notified via Sy interface; pushes policy to PGW to throttle or redirect subscriber.</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-idx">05</div>
+        <div class="step-body">
+          <div class="step-route">
+            <div class="step-node" style="border-color:#aaa; color:#ccc;">PGW</div>
+            <div class="step-arrow-txt">──CCR-T──▶</div>
+            <div class="step-node" style="border-color:#c77dff; color:#c77dff;">OCC</div>
+            <div class="step-arrow-txt">──COMMIT──▶</div>
+            <div class="step-node" style="border-color:#00d4ff; color:#00d4ff;">SDP</div>
+          </div>
+          <div class="step-detail">On session disconnect, CCR-Terminate sent. OCC commits exact monetary charge to SDP, releasing unused quota. Final CDR generated and forwarded to mediation systems.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOW 2: 5G SBA -->
+  <div class="flow-panel" id="flow-2">
+    <div style="display:flex; gap:10px; align-items:center; margin-bottom:20px; flex-wrap:wrap;">
+      <div style="font-family:var(--display); font-size:12px; letter-spacing:2px; color:var(--accent4);">5G STANDALONE · SERVICE-BASED ARCHITECTURE FLOW</div>
+      <div style="font-family:var(--mono); font-size:10px; color:var(--text-dim);">HTTP/2 · Nchf · N28 · N7</div>
+    </div>
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="step-idx">01</div>
+        <div class="step-body">
+          <div class="step-route">
+            <div class="step-node" style="border-color:#aaa; color:#ccc;">UE</div>
+            <div class="step-arrow-txt">──PDU Req──▶</div>
+            <div class="step-node" style="border-color:#aaa; color:#ccc;">AMF</div>
+            <div class="step-arrow-txt">──▶</div>
+            <div class="step-node" style="border-color:#c77dff; color:#c77dff;">SMF</div>
+          </div>
+          <div class="step-detail">UE requests PDU session establishment. AMF authenticates subscriber and forwards session request to SMF for session management.</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-idx">02</div>
+        <div class="step-body">
+          <div class="step-route">
+            <div class="step-node" style="border-color:#c77dff; color:#c77dff;">SMF</div>
+            <div class="step-arrow-txt">──Nchf──▶</div>
+            <div class="step-node" style="border-color:#ffe066; color:#ffe066;">cCAF (CHF)</div>
+            <div class="step-proto-badge">HTTP/2 JSON</div>
+          </div>
+          <div class="step-detail">SMF (API Consumer) invokes charging service on cCAF (CHF) via 3GPP Nchf interface. HTTP/2 JSON payload includes S-NSSAI slice ID, QoS flow parameters, and service type for advanced 5G rating.</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-idx">03</div>
+        <div class="step-body">
+          <div class="step-route">
+            <div class="step-node" style="border-color:#c77dff; color:#c77dff;">SMF</div>
+            <div class="step-arrow-txt">──N7──▶</div>
+            <div class="step-node" style="border-color:#ff4dde; color:#ff4dde;">CCPC (PCF)</div>
+            <div class="step-arrow-txt">──N28──▶</div>
+            <div class="step-node" style="border-color:#ffe066; color:#ffe066;">cCAF</div>
+          </div>
+          <div class="step-detail">Concurrent with charging: SMF requests session policies from CCPC (PCF) via N7. CCPC receives spending limit notifications and policy counters from cCAF via N28, ensuring charging and policy are perfectly synchronised.</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-idx">04</div>
+        <div class="step-body">
+          <div class="step-route">
+            <div class="step-node" style="border-color:#ffe066; color:#ffe066;">cCAF</div>
+            <div class="step-arrow-txt">──Internal──▶</div>
+            <div class="step-node" style="border-color:#00d4ff; color:#00d4ff;">SDP (Enhanced)</div>
+          </div>
+          <div class="step-detail">cCAF translates HTTP/2 payload to internal parameters for cloud-enhanced SDP. Session authorised, quota granted, session commences with continuous real-time quota management by cCAF.</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-idx">05</div>
+        <div class="step-body">
+          <div class="step-route">
+            <div class="step-node" style="border-color:#ffe066; color:#ffe066;">cCAF</div>
+            <div class="step-arrow-txt">──N28──▶</div>
+            <div class="step-node" style="border-color:#ff4dde; color:#ff4dde;">CCPC (PCF)</div>
+            <div class="step-arrow-txt">──N7──▶</div>
+            <div class="step-node" style="border-color:#c77dff; color:#c77dff;">SMF → UPF</div>
+          </div>
+          <div class="step-detail">On balance threshold, cCAF triggers CCPC via N28. CCPC instantly updates SMF with new policy rule. SMF enforces by restricting UPF throughput or blocking specific app traffic — demonstrating ultra-low latency 5G control.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════
+       SECTION 4 · PROTOCOL TABLE
+  ══════════════════════════════════════════════════ -->
+  <div class="section-title">
+    <h2>INTERFACE &amp; PROTOCOL MATRIX</h2>
+    <div class="section-num">04 / 05</div>
+  </div>
+
+  <div style="background:var(--panel); border:1px solid var(--border); overflow-x:auto;">
+    <table class="proto-table">
+      <thead>
+        <tr>
+          <th>SOURCE</th>
+          <th>DESTINATION</th>
+          <th>INTERFACE / PROTOCOL</th>
+          <th>ERA</th>
+          <th>DESCRIPTION</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="src">MSC / SGSN</td>
+          <td class="dst">CCN</td>
+          <td class="iface">CAPv1 · CAPv2 · CAPv3</td>
+          <td><span class="gen-pill g2g">2G/3G</span></td>
+          <td class="desc">CAMEL Application Part over SS7. Carries IN triggers for real-time CS voice and SMS charging control.</td>
+        </tr>
+        <tr>
+          <td class="src">PGW / GGSN</td>
+          <td class="dst">OCC</td>
+          <td class="iface">Diameter Gy / Ro</td>
+          <td><span class="gen-pill g4g">4G</span></td>
+          <td class="desc">Diameter Credit Control Application. Quota reservation and session-based online charging over TCP/IP.</td>
+        </tr>
+        <tr>
+          <td class="src">CCN / OCC</td>
+          <td class="dst">SDP</td>
+          <td class="iface">CIP / SCAPv2</td>
+          <td><span class="gen-pill gin">INTERNAL</span></td>
+          <td class="desc">Proprietary Ericsson protocols for real-time balance queries, subscriber authentication, and financial deductions at DB level.</td>
+        </tr>
+        <tr>
+          <td class="src">CCPC (PCRF)</td>
+          <td class="dst">PGW</td>
+          <td class="iface">Gx (Diameter)</td>
+          <td><span class="gen-pill g4g">4G</span></td>
+          <td class="desc">Policy and Charging Control rules pushed from PCRF to PGW. Governs QoS, MBR, and charging characteristics.</td>
+        </tr>
+        <tr>
+          <td class="src">CCPC (PCRF)</td>
+          <td class="dst">OCC</td>
+          <td class="iface">Sy (Diameter)</td>
+          <td><span class="gen-pill g4g">4G</span></td>
+          <td class="desc">Spending limit control and policy counter synchronisation between PCRF and OCS in 4G networks.</td>
+        </tr>
+        <tr>
+          <td class="src">SMF</td>
+          <td class="dst">cCAF (CHF)</td>
+          <td class="iface">Nchf</td>
+          <td><span class="gen-pill g5g">5G</span></td>
+          <td class="desc">3GPP-standardised 5G Service-Based Interface. HTTP/2 RESTful API for converged online and offline charging.</td>
+        </tr>
+        <tr>
+          <td class="src">SMF</td>
+          <td class="dst">CCPC (PCF)</td>
+          <td class="iface">N7</td>
+          <td><span class="gen-pill g5g">5G</span></td>
+          <td class="desc">Session management policy request interface. Carries PCC rules from PCF to SMF for UPF enforcement.</td>
+        </tr>
+        <tr>
+          <td class="src">CCPC (PCF)</td>
+          <td class="dst">cCAF (CHF)</td>
+          <td class="iface">N28</td>
+          <td><span class="gen-pill g5g">5G</span></td>
+          <td class="desc">Spending limit and policy counter synchronisation between PCF and CHF. 5G equivalent of Sy interface.</td>
+        </tr>
+        <tr>
+          <td class="src">AIR</td>
+          <td class="dst">Voucher Server</td>
+          <td class="iface">VSIP</td>
+          <td><span class="gen-pill gin">INTERNAL</span></td>
+          <td class="desc">Voucher Server Integration Protocol for cryptographic voucher validation, lifecycle modification, and serial verification.</td>
+        </tr>
+        <tr>
+          <td class="src">External IT / CRM</td>
+          <td class="dst">CCN / AIR</td>
+          <td class="iface">UCIP · ACIP · XML</td>
+          <td><span class="gen-pill gin">EXTERNAL</span></td>
+          <td class="desc">Allows external CRM, provisioning systems, and banking gateways to interact with the IN environment securely.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════
+       SECTION 5 · KPIs
+  ══════════════════════════════════════════════════ -->
+  <div class="section-title">
+    <h2>KEY PERFORMANCE INDICATORS</h2>
+    <div class="section-num">05 / 05</div>
+  </div>
+
+  <div class="kpi-grid">
+
+    <!-- System Health -->
+    <div class="kpi-category">
+      <div class="kpi-cat-header">
+        <div class="kpi-cat-icon">⬛</div>
+        <div class="kpi-cat-title" style="color:var(--accent);">SYSTEM HEALTH</div>
+      </div>
+
+      <div class="kpi-item">
+        <div class="kpi-name">
+          <div class="kpi-label">Transactions Per Second</div>
+          <div class="kpi-abbr">TPS</div>
+        </div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar" style="--kpi-color:var(--accent); width:92%;"></div></div>
+        <div class="kpi-desc">Ultimate capacity metric. Measures CIP/SCAP/Nchf throughput. Critical during Hajj/Ramadan peak events where exponential traffic spikes demand pre-provisioned capacity.</div>
+      </div>
+
+      <div class="kpi-item">
+        <div class="kpi-name">
+          <div class="kpi-label">CPU &amp; Memory Load</div>
+          <div class="kpi-abbr">CPU%</div>
+        </div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar" style="--kpi-color:var(--accent); width:75%;"></div></div>
+        <div class="kpi-desc">Sustained high CPU on CCN triggers capacity expansion. On cCAF Kubernetes deployments, CPU spikes auto-trigger horizontal pod autoscaling.</div>
+      </div>
+
+      <div class="kpi-item">
+        <div class="kpi-name">
+          <div class="kpi-label">Signalling Latency</div>
+          <div class="kpi-abbr">RTT</div>
+        </div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar" style="--kpi-color:var(--accent); width:98%;"></div></div>
+        <div class="kpi-desc">Round-trip for SDP reservation acknowledgement. Must remain in low milliseconds on legacy IN — MSC timeout causes dropped calls. Critical for URLLC in 5G (autonomous vehicles, industrial automation).</div>
+      </div>
+
+    </div>
+
+    <!-- Network Effectiveness -->
+    <div class="kpi-category">
+      <div class="kpi-cat-header">
+        <div class="kpi-cat-icon">◈</div>
+        <div class="kpi-cat-title" style="color:var(--accent2);">NETWORK EFFECTIVENESS</div>
+      </div>
+
+      <div class="kpi-item">
+        <div class="kpi-name">
+          <div class="kpi-label">Answer Seizure Ratio</div>
+          <div class="kpi-abbr">ASR</div>
+        </div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar" style="--kpi-color:var(--accent2); width:88%;"></div></div>
+        <div class="kpi-desc">% of successful call setups vs. total attempts. Drops in ASR flag CCN/SDP authorization failures — valid subscribers with sufficient funds being falsely barred due to DB corruption or protocol translation errors.</div>
+      </div>
+
+      <div class="kpi-item">
+        <div class="kpi-name">
+          <div class="kpi-label">Network Effectiveness Ratio</div>
+          <div class="kpi-abbr">NER</div>
+        </div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar" style="--kpi-color:var(--accent2); width:82%;"></div></div>
+        <div class="kpi-desc">Isolates subscriber behaviour from network faults. Degrading NER with stable ASR → issue at OCC/CCPC policy layer. Sessions connecting but policies incorrectly dropping them.</div>
+      </div>
+
+      <div class="kpi-item">
+        <div class="kpi-name">
+          <div class="kpi-label">VoNR Setup Success Rate</div>
+          <div class="kpi-abbr">VoNR SSR</div>
+        </div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar" style="--kpi-color:var(--accent2); width:79%;"></div></div>
+        <div class="kpi-desc">Nchf API signalling timeouts and VoNR setup failures are heavily scrutinised on cCAF/CCPC nodes. 5G voice relies on complex QoS flows managed by CCPC.</div>
+      </div>
+
+    </div>
+
+    <!-- User Experience -->
+    <div class="kpi-category">
+      <div class="kpi-cat-header">
+        <div class="kpi-cat-icon">◉</div>
+        <div class="kpi-cat-title" style="color:var(--accent4);">USER EXPERIENCE</div>
+      </div>
+
+      <div class="kpi-item">
+        <div class="kpi-name">
+          <div class="kpi-label">Time-to-Content</div>
+          <div class="kpi-abbr">TTC</div>
+        </div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar" style="--kpi-color:var(--accent4); width:85%;"></div></div>
+        <div class="kpi-desc">Delay before webpage/video renders. CCPC policy optimisation achieved 43% YouTube TTC reduction on WCDMA and 62% on LTE (dtac Thailand). Direct commercial impact on subscriber satisfaction.</div>
+      </div>
+
+      <div class="kpi-item">
+        <div class="kpi-name">
+          <div class="kpi-label">Video Freezing Rate</div>
+          <div class="kpi-abbr">VFR</div>
+        </div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar" style="--kpi-color:var(--accent4); width:70%;"></div></div>
+        <div class="kpi-desc">Proxy for subscriber satisfaction. CCPC failure to provision dedicated bearer during congestion causes freezes. Proactive throttling of background downloaders protects real-time video streams.</div>
+      </div>
+
+      <div class="kpi-item">
+        <div class="kpi-name">
+          <div class="kpi-label">Energy per Gigabyte</div>
+          <div class="kpi-abbr">kWh/GB</div>
+        </div>
+        <div class="kpi-bar-wrap"><div class="kpi-bar" style="--kpi-color:var(--accent4); width:60%;"></div></div>
+        <div class="kpi-desc">Net Zero 2050 compliance KPI. Ericsson PME rApp uses AI/ML to detect performance degradation. CCPC manages UE sleep modes and slice activation to minimize RAN energy consumption and OPEX.</div>
+      </div>
+
+    </div>
+
+  </div><!-- /kpi-grid -->
+
+</main>
+
+<footer>
+  <div class="ft-label">ERICSSON CONVERGED CHARGING SYSTEM · ARCHITECTURE REFERENCE | By: Vivek Anand</div>
+  <div class="ft-label pulse">● LIVE REFERENCE</div>
+  <div class="ft-label">SDP · CCN · AIR · OCC · cCAF · CCPC</div>
+</footer>
+
+<script>
+  function showFlow(idx) {
+    document.querySelectorAll('.flow-tab').forEach((t,i) => t.classList.toggle('active', i===idx));
+    document.querySelectorAll('.flow-panel').forEach((p,i) => p.classList.toggle('active', i===idx));
+  }
+
+  // Staggered animation on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.05 });
+
+  document.querySelectorAll('.node-card, .tl-item, .kpi-category, .flow-step').forEach((el, i) => {
+    if (!el.style.animationDelay) el.style.animationDelay = (i * 0.05) + 's';
+  });
+</script>
+</body>
+</html>
